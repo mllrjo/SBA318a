@@ -1,7 +1,7 @@
 {
   "name": "sba318a",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
@@ -9,9 +9,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "express": "^4.21.2",
     "nodemon": "^3.1.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mllrjo/SBA318a.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mllrjo/SBA318a/issues"
+  },
+  "homepage": "https://github.com/mllrjo/SBA318a#readme",
+  "description": ""
 }

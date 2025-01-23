@@ -1,67 +1,81 @@
 const express = require("express");
-const app = express();
-const port = 3000;i
-
 const bodyParser = require("body-parser");
-// Importing the data from our fake database files.
-const users = require("./data/users");
-const posts = require("./data/posts");
 
-app.use.bodyParser(urlencoded({extended:true}));
-app.use.bodyparser(json({extended:true}));
+// routers
+const users = require("./routes/users");
+const posts = require("./routes/posts");
+const error = require("./utilities/error");
 
-app
-  .route("/api/users")
-  .get((req,res) => {
-    res.json(users);
-  })
-.post((req,res) => {
-  if(req.body.name && req.body.username && req.body.email) {
-    if(users.find(u => u.username == req.body.username)) {
-      res.json({ error: "Username already taken" });
-      return;
-    }
-    const user = {
-      id: users[users.length - 1].id + 1,
-      name: req.body.name,
-      username: req.body.username,
-      email: req.body.email,
-    };
+const app = express();
+const port = 3000;
+// required for POST and PUT requests; qs library
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json({extended:true}));
+// app.use(express.urlencoded({extended:true}));
+// app.use(express.json({extended:true}));
 
-    user.push(user);
-    res.json(users[users.length -1]);
-  } else res.json({error: "Insufficient data" });
+app.use((req, res, next) => {
+  const time = new Date();
+
+  console.log(
+    `-----
+${time.toLocaleTimeString()}: Received a ${req.method} request to ${req.url}.`
+  );
+  if (Object.keys(req.body).length > 0) {
+    console.log("Containing the data:");
+    console.log(`${JSON.stringify(req.body)}`);
+  }
+  next();
 });
 
-app
-  .route("/api/users/:id")
-  get((req,res,next) => {
-    const user = users.find(u => u.id == req.params.id);
-    if(user) res.json(user);
-    else next();
-  })
-  .patch((req,res,next) => {
-    const user = users.find((u,i) => {
-      if(u.id == req.params.id) {
-        for(const key in req.body) {
-          users[i][key] = req.body.key;
-        }
-        return true;
-      }
-    });
-  }
+app.use("api/users", users);
+app.use("api/posts", posts);
 
-
-
-
-
-
-}
-
-
-
+// Adding some HATEOAS links.
 app.get("/", (req, res) => {
-  res.send("Work in progress!");
+  res.json({
+    links: [
+      {
+        href: "/api",
+        rel: "api",
+        type: "GET",
+      },
+    ],
+  });
+});
+  
+// Adding some HATEOAS links.
+app.get("/api", (req, res) => {
+  res.json({
+    links: [
+      {
+        href: "api/users",
+        rel: "users",
+        type: "GET",
+      },
+      {
+        href: "api/users",
+        rel: "users",
+        type: "POST",
+      },
+      {
+        href: "api/posts",
+        rel: "posts",
+        type: "GET",
+      },
+      {
+        href: "api/posts",
+        rel: "posts",
+        type: "POST",
+      },
+    ],
+  });
+});
+  
+// 404 Middleware
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.json({ error: err.message })
 });
 
 app.listen(port, () => {
