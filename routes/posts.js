@@ -56,4 +56,13 @@ router
     else next();
   });
 
+  router
+  .route("/:userId")
+  .get((req, res, next) => {
+    const user = users.filter((u) => u.id == req.params.userId);
+
+    if (user) res.json({ user });
+    else next();
+  })
+
 module.exports = router;
