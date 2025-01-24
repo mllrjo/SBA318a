@@ -40,7 +40,20 @@ router
   .get((req, res, next) => {
     const user = users.find((u) => u.id == req.params.id);
 
-    if (user) res.json({ user });
+    const links = [
+      {
+        href: `/${req.params.id}`,
+        rel: "",
+        type: "PATCH",
+      },
+      {
+        href: `/${req.params.id}`,
+        rel: "",
+        type: "DELETE",
+      },
+    ];
+
+    if (user) res.json({ user, links });
     else next();
   })
   .patch((req, res, next) => {

@@ -33,6 +33,67 @@ app.use("/api/users", users);
 app.use("/api/posts", posts);
 app.use("/api/comments", comments);
 
+// Adding some HATEOAS links.
+app.get("/", (req, res) => {
+  res.json({
+    links: [
+      {
+        href: "/api",
+        rel: "api",
+        type: "GET",
+      },
+    ],
+  });
+});
+  
+// Adding some HATEOAS links.
+app.get("/api", (req, res) => {
+  res.json({
+    links: [
+      {
+        href: "api/users",
+        rel: "users",
+        type: "GET",
+      },
+      {
+        href: "api/users",
+        rel: "users",
+        type: "POST",
+      },
+      {
+        href: "api/posts",
+        rel: "posts",
+        type: "GET",
+      },
+      {
+        href: "api/posts",
+        rel: "posts",
+        type: "POST",
+      },
+      {
+        href: "api/comments",
+        rel: "comments",
+        type: "GET",
+      },
+      {
+        href: "api/comments",
+        rel: "posts",
+        type: "POST",
+      },
+      {
+        href: "api/comments",
+        rel: "comments",
+        type: "PATCH",
+      },
+      {
+        href: "api/comments",
+        rel: "comments",
+        type: "DELETE",
+      },
+    ],
+  });
+});
+  
 // 404 Middleware
 app.use((req, res, next) => {
   next(error(404, "Resource Not Found"));

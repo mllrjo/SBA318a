@@ -1,21 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const users = require("../data/users");
+const users = require("../data/comments");
 const error = require("../utilities/error");
 
 router
   .route("/")
   .get((req, res) => {
-    const links = [
-      {
-        href: "users/:id",
-        rel: ":id",
-        type: "GET",
-      },
-    ];
-
-    res.json({ users, links });
+    res.json(res);
   })
   .post((req, res, next) => {
     if (req.body.name && req.body.username && req.body.email) {
@@ -40,7 +32,7 @@ router
   .get((req, res, next) => {
     const user = users.find((u) => u.id == req.params.id);
 
-    if (user) res.json({ user });
+    if (user) res.json(user);
     else next();
   })
   .patch((req, res, next) => {
