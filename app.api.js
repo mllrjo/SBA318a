@@ -2,8 +2,8 @@ const express = require("express");
 // const bodyParser = require("body-parser");
 
 // routers
-const users = require("./routes/users");
-const posts = require("./routes/posts");
+const users = require("./routes/users.api");
+const posts = require("./routes/posts.api");
 const comments = require("./routes/comments");
 const error = require("./utilities/error");
 
