@@ -1,5 +1,5 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 
 // routers
 const users = require("./routes/users");
@@ -9,10 +9,10 @@ const error = require("./utilities/error");
 const app = express();
 const port = 3000;
 // required for POST and PUT requests; qs library
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json({extended:true}));
-// app.use(express.urlencoded({extended:true}));
-// app.use(express.json({extended:true}));
+// app.use(bodyParser.urlencoded({extended:true}));
+// app.use(bodyParser.json({extended:true}));
+app.use(express.urlencoded({extended:true}));
+app.use(express.json({extended:true}));
 
 app.use((req, res, next) => {
   const time = new Date();
@@ -28,8 +28,8 @@ ${time.toLocaleTimeString()}: Received a ${req.method} request to ${req.url}.`
   next();
 });
 
-app.use("api/users", users);
-app.use("api/posts", posts);
+app.use("/api/users", users);
+app.use("/api/posts", posts);
 
 // Adding some HATEOAS links.
 app.get("/", (req, res) => {
@@ -73,6 +73,11 @@ app.get("/api", (req, res) => {
 });
   
 // 404 Middleware
+app.use((req, res, next) => {
+  next(error(404, "Resource Not Found"));
+});
+
+// more general error code middleware(?)
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.json({ error: err.message })
