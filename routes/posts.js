@@ -7,7 +7,27 @@ const error = require("../utilities/error");
 router
   .route("/")
   .get((req, res) => {
-    res.json({ posts });
+    const { userId } = req.query;
+
+    if (userId) {
+      const filteredPosts = posts.filter((post) => post.userId == userId);
+      res.json({ posts: filteredPosts });
+    } else {
+      res.json({ posts });
+    }
+  })
+  .post((req, res, next) => {
+    if (req.body.userId && req.body.title && req.body.content) {
+      const post = {
+        id: posts[posts.length - 1].id + 1,
+        userId: req.body.userId,
+        title: req.body.title,
+        content: req.body.content,
+      };
+
+      posts.push(post);
+      res.json(posts[posts.length - 1]);
+    } else next(error(400, "Insufficient Data"));
   })
   .post((req, res, next) => {
     if (req.body.userId && req.body.title && req.body.content) {
@@ -22,6 +42,7 @@ router
       res.json(posts[posts.length - 1]);
     } else next(error(400, "Insufficient Data"));
   });
+
 
 router
   .route("/:id")
@@ -55,14 +76,5 @@ router
     if (post) res.json(post);
     else next();
   });
-
-  router
-  .route("/:userId")
-  .get((req, res, next) => {
-    const user = users.filter((u) => u.id == req.params.userId);
-
-    if (user) res.json({ user });
-    else next();
-  })
 
 module.exports = router;
